@@ -160,5 +160,41 @@
         "Location": "DriverMain",
         "Date": "2024-09-11",
         "Time": "05:34:03"
+    },
+    {
+        "Error": "Success Soup",
+        "Location": "GetPage URL",
+        "Date": "2024-09-11",
+        "Time": "05:37:05"
+    },
+    {
+        "Error": "Success JobCard",
+        "Location": "JobCard",
+        "Date": "2024-09-11",
+        "Time": "05:37:05"
+    },
+    {
+        "Error": "Success Soup",
+        "Location": "GetPage URL",
+        "Date": "2024-09-11",
+        "Time": "05:37:05"
+    },
+    {
+        "Error": "Success JobCard",
+        "Location": "JobCard",
+        "Date": "2024-09-11",
+        "Time": "05:37:05"
+    },
+    {
+        "Error": "Job cards container not found in the page",
+        "Location": "Soup",
+        "Date": "2024-09-11",
+        "Time": "05:37:05"
+    },
+    {
+        "Error": "Some lists are empty or data is missing to create DataFrame",
+        "Location": "createDataFrame",
+        "Date": "2024-09-11",
+        "Time": "05:37:05"
     }
 ]
