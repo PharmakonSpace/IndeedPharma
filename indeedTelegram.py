@@ -79,21 +79,14 @@ def getPage(url):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
 
-    # Set a user agent to simulate a real browser
     user_agents = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15",
     ]
-
     options.add_argument(f"user-agent={random.choice(user_agents)}")
 
-    # Additional options (no need to use 'desired_capabilities')
-    options.add_argument("--disable-notifications")
-    options.add_argument("--disable-geolocation")
-
-    # Initialize the WebDriver with options
     driver = webdriver.Chrome(options=options)
-
+   
     try:
         driver.get(url)
         page_content = driver.page_source
@@ -125,12 +118,19 @@ def jobCard(url):
         description_elements = soup.find_all("div", class_="css-9446fg eu4oa1w0")
         job_link_elements = soup.find_all("a", class_="jcs-JobTitle css-jspxzf eu4oa1w0")
 
+        if not (title_elements and company_elements and location_elements and salary_elements and description_elements and job_link_elements):
+            print("Some elements are missing in the page content.")
+            return
+
         titles.extend([title.text for title in title_elements])
         names.extend([name.text for name in company_elements])
         locations.extend([location.text for location in location_elements])
         salaries.extend([salar.text for salar in salary_elements])
         job_descriptions.extend([" ".join([li.text for li in desc.find_all("li")]) for desc in description_elements])
         links.extend(["https://www.indeed.com" + link.get("href") for link in job_link_elements])
+
+        if not titles:
+            print(f"No job titles found on the page for {url}")
 
         print("Success Job card data")
         errorLog_file("Success JobCard", "JobCard", today, now)
@@ -140,16 +140,18 @@ def jobCard(url):
         errorLog_file(str(ex), "jobCard Function Failed", today, now)
         print("An error occurred in jobCard: ", ex)
 
+
 def createDataFrame():
     try:
-        if not titles or not names or not locations or not salaries or not job_descriptions or not links:
+        if not (titles and names and locations and salaries and job_descriptions and links):
+            print(f"Lists are empty: titles={titles}, names={names}, locations={locations}, salaries={salaries}, job_descriptions={job_descriptions}, links={links}")
             raise ValueError("Some lists are empty or data is missing to create DataFrame")
 
         # Ensure all lists have the same length
         if not (len(titles) == len(names) == len(locations) == len(salaries) == len(job_descriptions) == len(links)):
+            print("Mismatch in the length of job data lists")
             raise ValueError("Mismatch in the length of job data lists")
 
-        # Create a list of dictionaries
         job_card_data = [
             {
                 "Job Title": titles[i],
@@ -169,7 +171,6 @@ def createDataFrame():
         errorLog_file(str(ex), "createDataFrame", today, now)
         print("An error occurred in createDataFrame: ", ex)
         return None
-
 
 def errorLog_file(error, loc, date, time):
     try:
