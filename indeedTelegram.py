@@ -8,7 +8,7 @@ import json
 from dotenv import load_dotenv
 import random
 load_dotenv()
-from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 # Configuration
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')  # Replace with your bot token securely
 TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
@@ -78,17 +78,39 @@ def send_telegram_alert(message):
 def getPage(url):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
-    driver = webdriver.Chrome(options=options)
-    
+
+    # Set a user agent to simulate a real browser
+    user_agents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15",
+        # Add more if needed
+    ]
+
+    # Use a random user agent from the list
+    options.add_argument(f"user-agent={random.choice(user_agents)}")
+
+    # Setting other headers
+    capabilities = DesiredCapabilities.CHROME
+    capabilities["goog:chromeOptions"] = {
+        "w3c": False,
+        "args": ["--headless"],
+        "prefs": {
+            "profile.default_content_setting_values.notifications": 2,
+            "profile.default_content_setting_values.geolocation": 2
+        }
+    }
+
+    driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
+
     try:
         driver.get(url)
         page_content = driver.page_source
         soup = BeautifulSoup(page_content, 'html.parser')
         result = soup.find(id="mosaic-provider-jobcards")
-        
+
         if result is None:
             raise ValueError("Job cards container not found in the page")
-        
+
         errorLog_file("Success Soup", "GetPage URL", today, now)
         return soup
     except Exception as ex:
@@ -195,6 +217,10 @@ def DriverMain(listOfposition):
         for job_title in listOfposition:
             url = f"https://in.indeed.com/jobs?q={job_title}&l=India&from=searchOnDesktopSerp"
             jobCard(url)
+
+    # Add a random sleep to prevent rate-limiting
+    time.sleep(random.uniform(15, 30))  # Increase sleep time
+
 
             # Send Telegram alert for each job title
             if titles:
