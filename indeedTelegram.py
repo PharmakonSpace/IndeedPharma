@@ -6,7 +6,7 @@ import time
 import os
 import json
 from dotenv import load_dotenv
-
+import random
 load_dotenv()
 
 # Configuration
@@ -76,8 +76,18 @@ def send_telegram_alert(message):
 
 
 def getPage(url):
+    user_agents = [
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15"
+    # Add more User-Agent strings here
+   ]
+
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+    "User-Agent": random.choice(user_agents),
+    "Referer": "https://www.google.com/",
+    "Accept-Language": "en-US,en;",
+    "Accept-Encoding": "gzip, deflate,"
     }
     try:
         page = requests.get(url, headers=headers)
