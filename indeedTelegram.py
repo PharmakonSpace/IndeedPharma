@@ -78,7 +78,11 @@ def send_telegram_alert(message):
 def getPage(url):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
-
+    options.add_argument("start-maximized")
+    options.add_argument("disable-infobars")
+    options.add_argument("--disable-extensions")
+    
+    # User-Agent for the requests
     user_agents = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15",
@@ -86,7 +90,6 @@ def getPage(url):
     options.add_argument(f"user-agent={random.choice(user_agents)}")
 
     driver = webdriver.Chrome(options=options)
-   
     try:
         driver.get(url)
         page_content = driver.page_source
@@ -96,14 +99,12 @@ def getPage(url):
         if result is None:
             raise ValueError("Job cards container not found in the page")
 
-        errorLog_file("Success Soup", "GetPage URL", today, now)
         return soup
     except Exception as ex:
         errorLog_file(str(ex), "Soup", today, now)
         return None
     finally:
         driver.quit()
-
 
 def jobCard(url):
     try:
@@ -118,22 +119,19 @@ def jobCard(url):
         description_elements = soup.find_all("div", class_="css-9446fg eu4oa1w0")
         job_link_elements = soup.find_all("a", class_="jcs-JobTitle css-jspxzf eu4oa1w0")
 
-        if not (title_elements and company_elements and location_elements and salary_elements and description_elements and job_link_elements):
-            print("Some elements are missing in the page content.")
+        # Handle cases where no data is found
+        if not any([title_elements, company_elements, location_elements, salary_elements, description_elements, job_link_elements]):
+            print(f"Some elements are missing in the page content for URL: {url}")
             return
 
-        titles.extend([title.text for title in title_elements])
-        names.extend([name.text for name in company_elements])
-        locations.extend([location.text for location in location_elements])
-        salaries.extend([salar.text for salar in salary_elements])
-        job_descriptions.extend([" ".join([li.text for li in desc.find_all("li")]) for desc in description_elements])
-        links.extend(["https://www.indeed.com" + link.get("href") for link in job_link_elements])
-
-        if not titles:
-            print(f"No job titles found on the page for {url}")
+        titles.extend([title.text.strip() for title in title_elements])
+        names.extend([name.text.strip() for name in company_elements])
+        locations.extend([location.text.strip() for location in location_elements])
+        salaries.extend([salar.text.strip() for salar in salary_elements])
+        job_descriptions.extend([" ".join([li.text.strip() for li in desc.find_all("li")]) for desc in description_elements])
+        links.extend([f"https://www.indeed.com{link.get('href')}" for link in job_link_elements])
 
         print("Success Job card data")
-        errorLog_file("Success JobCard", "JobCard", today, now)
         return (titles, names, locations, salaries, job_descriptions, links)
 
     except Exception as ex:
@@ -141,15 +139,16 @@ def jobCard(url):
         print("An error occurred in jobCard: ", ex)
 
 
+
 def createDataFrame():
     try:
-        if not (titles and names and locations and salaries and job_descriptions and links):
-            print(f"Lists are empty: titles={titles}, names={names}, locations={locations}, salaries={salaries}, job_descriptions={job_descriptions}, links={links}")
-            raise ValueError("Some lists are empty or data is missing to create DataFrame")
+        # Check if all lists have data
+        if not all([titles, names, locations, salaries, job_descriptions, links]):
+            raise ValueError("One or more lists are empty.")
 
         # Ensure all lists have the same length
-        if not (len(titles) == len(names) == len(locations) == len(salaries) == len(job_descriptions) == len(links)):
-            print("Mismatch in the length of job data lists")
+        length = len(titles)
+        if not all(len(lst) == length for lst in [names, locations, salaries, job_descriptions, links]):
             raise ValueError("Mismatch in the length of job data lists")
 
         job_card_data = [
@@ -161,7 +160,7 @@ def createDataFrame():
                 "Job Description": job_descriptions[i],
                 "Link": links[i]
             }
-            for i in range(len(titles))
+            for i in range(length)
         ]
 
         print("Data Frame successfully created")
@@ -171,6 +170,7 @@ def createDataFrame():
         errorLog_file(str(ex), "createDataFrame", today, now)
         print("An error occurred in createDataFrame: ", ex)
         return None
+
 
 def errorLog_file(error, loc, date, time):
     try:
@@ -206,6 +206,8 @@ def DriverMain(listOfposition):
     links.clear()
 
     sent_alerts = load_sent_alerts()  # Load already sent alerts
+
+    url = None  # Initialize url variable
 
     try:
         for job_title in listOfposition:
@@ -262,6 +264,7 @@ def DriverMain(listOfposition):
             print("Failed link: " + url)
         print("An error occurred in DriverMain: ", ex)
         errorLog_file(str(ex), "DriverMain", today, now)
+
        
 listOfposition = ["pharmacy", "pharmaceutical", "Pharmavigilance"]  # List of job titles to search
 DriverMain(listOfposition)  # Driver function
