@@ -142,5 +142,23 @@
         "Location": "createDataFrame",
         "Date": "2024-09-11",
         "Time": "05:29:52"
+    },
+    {
+        "Error": "Success Soup",
+        "Location": "GetPage URL",
+        "Date": "2024-09-11",
+        "Time": "05:34:03"
+    },
+    {
+        "Error": "Success JobCard",
+        "Location": "JobCard",
+        "Date": "2024-09-11",
+        "Time": "05:34:03"
+    },
+    {
+        "Error": "list index out of range",
+        "Location": "DriverMain",
+        "Date": "2024-09-11",
+        "Time": "05:34:03"
     }
 ]
