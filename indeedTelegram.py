@@ -5,7 +5,6 @@ from datetime import date, datetime
 import time
 import os
 import json
-import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
