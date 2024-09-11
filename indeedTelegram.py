@@ -36,7 +36,8 @@ today = date.today()
 now = datetime.now().strftime("%H:%M:%S")
 
 # Data frame and series Utilities
-template = {"Job Title": [], "Company Name": [], "Location": [], "Salaries": [], "Job Description": [], "Link": []}
+# Data frame and series Utilities
+template = {"Job Title": [], "Company Name": [], "Location": [], "Job Description": [], "Link": []}
 errorTemplate = {"Error": [], "Location": [], "Date": [], "Time": []}
 errorDataFrame = pd.DataFrame(errorTemplate)
 Main_DataFrame = pd.DataFrame(template)
@@ -115,50 +116,36 @@ def jobCard(url):
         title_elements = soup.find_all("h2", class_="jobTitle css-198pbd eu4oa1w0")
         company_elements = soup.find_all("span", class_="css-63koeb eu4oa1w0")
         location_elements = soup.find_all("div", class_="css-1p0sjhy eu4oa1w0")
-        salary_elements = soup.find_all("div", class_="css-1cvvo1b eu4oa1w0")
         description_elements = soup.find_all("div", class_="css-9446fg eu4oa1w0")
         job_link_elements = soup.find_all("a", class_="jcs-JobTitle css-jspxzf eu4oa1w0")
 
-        print(f"Found {len(title_elements)} titles, {len(company_elements)} companies, {len(location_elements)} locations, {len(salary_elements)} salaries, {len(description_elements)} descriptions, {len(job_link_elements)} links")
-
         # Handle cases where no data is found
-        if not any([title_elements, company_elements, location_elements, salary_elements, description_elements, job_link_elements]):
+        if not any([title_elements, company_elements, location_elements, description_elements, job_link_elements]):
             print(f"Some elements are missing in the page content for URL: {url}")
             return
 
         titles.extend([title.text.strip() for title in title_elements])
         names.extend([name.text.strip() for name in company_elements])
         locations.extend([location.text.strip() for location in location_elements])
-        salaries.extend([salar.text.strip() if salar else "N/A" for salar in salary_elements])
         job_descriptions.extend([" ".join([li.text.strip() for li in desc.find_all("li")]) if desc else "N/A" for desc in description_elements])
         links.extend([f"https://www.indeed.com{link.get('href')}" if link else "N/A" for link in job_link_elements])
 
         print("Success Job card data")
-        return (titles, names, locations, salaries, job_descriptions, links)
+        return (titles, names, locations, job_descriptions, links)
 
     except Exception as ex:
         errorLog_file(str(ex), "jobCard Function Failed", today, now)
         print("An error occurred in jobCard: ", ex)
 
-
 def createDataFrame():
     try:
-        # Debugging prints
-        print(f"Titles length: {len(titles)}")
-        print(f"Names length: {len(names)}")
-        print(f"Locations length: {len(locations)}")
-        print(f"Salaries length: {len(salaries)}")
-        print(f"Job Descriptions length: {len(job_descriptions)}")
-        print(f"Links length: {len(links)}")
-
-        # Check for mismatched lengths
-        if len(titles) != len(names) or len(names) != len(locations) or len(locations) != len(salaries) or len(salaries) != len(job_descriptions) or len(job_descriptions) != len(links):
-            for i in range(len(titles)):
-                print(f"Index {i}: Title={titles[i] if i < len(titles) else 'N/A'}, Salary={salaries[i] if i < len(salaries) else 'N/A'}")
+        # Check if all lists have data
+        if not all([titles, names, locations, job_descriptions, links]):
+            raise ValueError("One or more lists are empty.")
 
         # Ensure all lists have the same length
         length = len(titles)
-        if not all(len(lst) == length for lst in [names, locations, salaries, job_descriptions, links]):
+        if not all(len(lst) == length for lst in [names, locations, job_descriptions, links]):
             raise ValueError("Mismatch in the length of job data lists")
 
         job_card_data = [
@@ -166,7 +153,6 @@ def createDataFrame():
                 "Job Title": titles[i],
                 "Company Name": names[i],
                 "Location": locations[i],
-                "Salaries": salaries[i] if i < len(salaries) else "N/A",
                 "Job Description": job_descriptions[i],
                 "Link": links[i]
             }
@@ -180,7 +166,6 @@ def createDataFrame():
         errorLog_file(str(ex), "createDataFrame", today, now)
         print("An error occurred in createDataFrame: ", ex)
         return None
-
 
 def errorLog_file(error, loc, date, time):
     try:
@@ -207,11 +192,10 @@ def errorLog_file(error, loc, date, time):
 
 
 def DriverMain(listOfposition):
-    global titles, names, locations, salaries, job_descriptions, links
+    global titles, names, locations, job_descriptions, links
     titles.clear()
     names.clear()
     locations.clear()
-    salaries.clear()
     job_descriptions.clear()
     links.clear()
 
@@ -225,7 +209,7 @@ def DriverMain(listOfposition):
             jobCard(url)
 
             # Ensure data was retrieved before continuing
-            if not titles or not names or not locations or not salaries or not job_descriptions or not links:
+            if not titles or not names or not locations or not job_descriptions or not links:
                 print(f"No data retrieved for {job_title}. Skipping this job title.")
                 continue  # Skip to the next job title
 
@@ -239,7 +223,6 @@ def DriverMain(listOfposition):
                         message = (f"<b>Job Title:</b> {titles[i]}\n"
                                    f"<b>Company:</b> {names[i]}\n"
                                    f"<b>Location:</b> {locations[i]}\n"
-                                   f"<b>Salaries:</b> {salaries[i]}\n"
                                    f"<b>Description:</b> {job_descriptions[i]}\n"
                                    f"<a href='{links[i]}'>Apply Here</a>")
                         send_telegram_alert(message)
@@ -274,7 +257,6 @@ def DriverMain(listOfposition):
             print("Failed link: " + url)
         print("An error occurred in DriverMain: ", ex)
         errorLog_file(str(ex), "DriverMain", today, now)
-
-       
+      
 listOfposition = ["pharmacy", "pharmaceutical", "Pharmavigilance"]  # List of job titles to search
 DriverMain(listOfposition)  # Driver function
