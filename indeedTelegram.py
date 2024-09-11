@@ -7,8 +7,10 @@ import os
 import json
 from dotenv import load_dotenv
 import random
-load_dotenv()
+from selenium import webdriver 
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
+load_dotenv()
 # Configuration
 TELEGRAM_BOT_TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')  # Replace with your bot token securely
 TELEGRAM_CHAT_ID = os.environ.get('TELEGRAM_CHAT_ID')
