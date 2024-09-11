@@ -244,5 +244,17 @@
         "Location": "createDataFrame",
         "Date": "2024-09-11",
         "Time": "05:48:52"
+    },
+    {
+        "Error": "Job cards container not found in the page",
+        "Location": "Soup",
+        "Date": "2024-09-11",
+        "Time": "05:59:48"
+    },
+    {
+        "Error": "Mismatch in the length of job data lists",
+        "Location": "createDataFrame",
+        "Date": "2024-09-11",
+        "Time": "05:59:48"
     }
 ]
