@@ -118,5 +118,29 @@
         "Location": "createDataFrame",
         "Date": "2024-09-11",
         "Time": "05:26:09"
+    },
+    {
+        "Error": "WebDriver.__init__() got an unexpected keyword argument 'desired_capabilities'",
+        "Location": "jobCard Function Failed",
+        "Date": "2024-09-11",
+        "Time": "05:29:52"
+    },
+    {
+        "Error": "WebDriver.__init__() got an unexpected keyword argument 'desired_capabilities'",
+        "Location": "jobCard Function Failed",
+        "Date": "2024-09-11",
+        "Time": "05:29:52"
+    },
+    {
+        "Error": "WebDriver.__init__() got an unexpected keyword argument 'desired_capabilities'",
+        "Location": "jobCard Function Failed",
+        "Date": "2024-09-11",
+        "Time": "05:29:52"
+    },
+    {
+        "Error": "Some lists are empty or data is missing to create DataFrame",
+        "Location": "createDataFrame",
+        "Date": "2024-09-11",
+        "Time": "05:29:52"
     }
 ]
