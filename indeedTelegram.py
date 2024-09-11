@@ -218,9 +218,8 @@ def DriverMain(listOfposition):
             url = f"https://in.indeed.com/jobs?q={job_title}&l=India&from=searchOnDesktopSerp"
             jobCard(url)
 
-    # Add a random sleep to prevent rate-limiting
-    time.sleep(random.uniform(15, 30))  # Increase sleep time
-
+            # Add a random sleep to prevent rate-limiting
+            time.sleep(random.uniform(15, 30))  # Increase sleep time
 
             # Send Telegram alert for each job title
             if titles:
@@ -260,6 +259,7 @@ def DriverMain(listOfposition):
             print("Failed link: " + url)
         print("An error occurred in DriverMain: ", ex)
         errorLog_file(str(ex), "DriverMain", today, now)
+
         
 listOfposition = ["pharmacy", "pharmaceutical", "Pharmavigilance"]  # List of job titles to search
 DriverMain(listOfposition)  # Driver function
