@@ -75,8 +75,6 @@ def send_telegram_alert(message):
             print(f"Something went wrong: {err}")
             return
 
-
-
 def getPage(url):
     options = webdriver.ChromeOptions()
     options.add_argument("--headless")
@@ -213,12 +211,14 @@ def DriverMain(listOfposition):
             url = f"https://in.indeed.com/jobs?q={job_title}&l=India&from=searchOnDesktopSerp"
             jobCard(url)
 
-            # Add a random sleep to prevent rate-limiting
-            time.sleep(random.uniform(15, 30))  # Increase sleep time
+            # Ensure data was retrieved before continuing
+            if not titles or not names or not locations or not salaries or not job_descriptions or not links:
+                print(f"No data retrieved for {job_title}. Skipping this job title.")
+                continue  # Skip to the next job title
 
             # Send Telegram alert for each job title
-            if titles:
-                for i in range(len(titles)):
+            for i in range(len(titles)):
+                try:
                     job_id = links[i].split("jk=")[-1].split("&")[0]
 
                     # Check if the job ID has already been alerted
@@ -237,6 +237,13 @@ def DriverMain(listOfposition):
                     else:
                         print(f"Alert already sent for job ID: {job_id}")
 
+                except IndexError as ie:
+                    print(f"IndexError for job title {titles[i]}: {ie}")
+                    errorLog_file(str(ie), "IndexError in DriverMain", today, now)
+                except Exception as ex:
+                    print(f"An error occurred while processing job title {titles[i]}: {ex}")
+                    errorLog_file(str(ex), "Error in processing job title", today, now)
+
             # Random sleep between 5 to 15 seconds
             time.sleep(random.uniform(5, 15))
 
@@ -254,7 +261,6 @@ def DriverMain(listOfposition):
             print("Failed link: " + url)
         print("An error occurred in DriverMain: ", ex)
         errorLog_file(str(ex), "DriverMain", today, now)
-
-        
+       
 listOfposition = ["pharmacy", "pharmaceutical", "Pharmavigilance"]  # List of job titles to search
 DriverMain(listOfposition)  # Driver function
