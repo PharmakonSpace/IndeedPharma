@@ -232,5 +232,17 @@
         "Location": "createDataFrame",
         "Date": "2024-09-11",
         "Time": "05:45:45"
+    },
+    {
+        "Error": "Job cards container not found in the page",
+        "Location": "Soup",
+        "Date": "2024-09-11",
+        "Time": "05:48:52"
+    },
+    {
+        "Error": "One or more lists are empty.",
+        "Location": "createDataFrame",
+        "Date": "2024-09-11",
+        "Time": "05:48:52"
     }
 ]
