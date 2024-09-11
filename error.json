@@ -94,5 +94,29 @@
         "Location": "createDataFrame",
         "Date": "2024-09-11",
         "Time": "05:11:22"
+    },
+    {
+        "Error": "name 'webdriver' is not defined",
+        "Location": "jobCard Function Failed",
+        "Date": "2024-09-11",
+        "Time": "05:26:09"
+    },
+    {
+        "Error": "name 'webdriver' is not defined",
+        "Location": "jobCard Function Failed",
+        "Date": "2024-09-11",
+        "Time": "05:26:09"
+    },
+    {
+        "Error": "name 'webdriver' is not defined",
+        "Location": "jobCard Function Failed",
+        "Date": "2024-09-11",
+        "Time": "05:26:09"
+    },
+    {
+        "Error": "Some lists are empty or data is missing to create DataFrame",
+        "Location": "createDataFrame",
+        "Date": "2024-09-11",
+        "Time": "05:26:09"
     }
 ]
