@@ -85,24 +85,16 @@ def getPage(url):
     user_agents = [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36",
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Safari/605.1.15",
-        # Add more if needed
     ]
 
-    # Use a random user agent from the list
     options.add_argument(f"user-agent={random.choice(user_agents)}")
 
-    # Setting other headers
-    capabilities = DesiredCapabilities.CHROME
-    capabilities["goog:chromeOptions"] = {
-        "w3c": False,
-        "args": ["--headless"],
-        "prefs": {
-            "profile.default_content_setting_values.notifications": 2,
-            "profile.default_content_setting_values.geolocation": 2
-        }
-    }
+    # Additional options (no need to use 'desired_capabilities')
+    options.add_argument("--disable-notifications")
+    options.add_argument("--disable-geolocation")
 
-    driver = webdriver.Chrome(options=options, desired_capabilities=capabilities)
+    # Initialize the WebDriver with options
+    driver = webdriver.Chrome(options=options)
 
     try:
         driver.get(url)
@@ -120,6 +112,7 @@ def getPage(url):
         return None
     finally:
         driver.quit()
+
 
 def jobCard(url):
     try:
