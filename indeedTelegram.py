@@ -77,33 +77,40 @@ def send_telegram_alert(message):
 
 def getPage(url):
     user_agents = [
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15"
-    # Add more User-Agent strings here
-   ]
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101 Firefox/91.0",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.2 Safari/605.1.15"
+    ]
 
     headers = {
-    "User-Agent": random.choice(user_agents),
-    "Referer": "https://www.google.com/",
-    "Accept-Language": "en-US,en;",
-    "Accept-Encoding": "gzip, deflate,"
+        "User-Agent": random.choice(user_agents),
+        "Referer": "https://www.google.com/",
+        "Accept-Language": "en-US,en;",
+        "Accept-Encoding": "gzip, deflate,"
     }
     try:
         page = requests.get(url, headers=headers)
         page.raise_for_status()
         soup = BeautifulSoup(page.content, 'html.parser')
         result = soup.find(id="mosaic-provider-jobcards")
-        
+
         if result is None:
             raise ValueError("Job cards container not found in the page")
 
         errorLog_file("Success Soup", "GetPage URL", today, now)
         return soup
 
+    except requests.exceptions.HTTPError as ex:
+        if ex.response.status_code == 403:
+            print("403 Forbidden error. Retrying with different headers...")
+            time.sleep(5)  # Wait before retrying
+            return getPage(url)  # Retry request
+        else:
+            errorLog_file(str(ex), "Soup", today, now)
+            return None
+
     except Exception as ex:
         errorLog_file(str(ex), "Soup", today, now)
-        print("An error occurred in getPage: ", ex)
         return None
 
 def jobCard(url):
@@ -226,7 +233,8 @@ def DriverMain(listOfposition):
                     else:
                         print(f"Alert already sent for job ID: {job_id}")
 
-            time.sleep(10)
+            # Random sleep between 5 to 15 seconds
+            time.sleep(random.uniform(5, 15))
 
         # Create and save the combined JSON after processing all job titles
         final_data = createDataFrame()
@@ -242,6 +250,6 @@ def DriverMain(listOfposition):
             print("Failed link: " + url)
         print("An error occurred in DriverMain: ", ex)
         errorLog_file(str(ex), "DriverMain", today, now)
-
+        
 listOfposition = ["pharmacy", "pharmaceutical", "Pharmavigilance"]  # List of job titles to search
 DriverMain(listOfposition)  # Driver function
