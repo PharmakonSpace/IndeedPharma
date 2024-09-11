@@ -119,13 +119,7 @@ def jobCard(url):
         description_elements = soup.find_all("div", class_="css-9446fg eu4oa1w0")
         job_link_elements = soup.find_all("a", class_="jcs-JobTitle css-jspxzf eu4oa1w0")
 
-        # Debug prints to verify data
-        print(f"Title Elements: {len(title_elements)}")
-        print(f"Company Elements: {len(company_elements)}")
-        print(f"Location Elements: {len(location_elements)}")
-        print(f"Salary Elements: {len(salary_elements)}")
-        print(f"Description Elements: {len(description_elements)}")
-        print(f"Job Link Elements: {len(job_link_elements)}")
+        print(f"Found {len(title_elements)} titles, {len(company_elements)} companies, {len(location_elements)} locations, {len(salary_elements)} salaries, {len(description_elements)} descriptions, {len(job_link_elements)} links")
 
         # Handle cases where no data is found
         if not any([title_elements, company_elements, location_elements, salary_elements, description_elements, job_link_elements]):
@@ -135,29 +129,32 @@ def jobCard(url):
         titles.extend([title.text.strip() for title in title_elements])
         names.extend([name.text.strip() for name in company_elements])
         locations.extend([location.text.strip() for location in location_elements])
-        salaries.extend([salar.text.strip() for salar in salary_elements])
-        job_descriptions.extend([" ".join([li.text.strip() for li in desc.find_all("li")]) for desc in description_elements])
-        links.extend([f"https://www.indeed.com{link.get('href')}" for link in job_link_elements])
+        salaries.extend([salar.text.strip() if salar else "N/A" for salar in salary_elements])
+        job_descriptions.extend([" ".join([li.text.strip() for li in desc.find_all("li")]) if desc else "N/A" for desc in description_elements])
+        links.extend([f"https://www.indeed.com{link.get('href')}" if link else "N/A" for link in job_link_elements])
 
         print("Success Job card data")
-        print(f"Titles: {titles}")
-        print(f"Names: {names}")
-        print(f"Locations: {locations}")
-        print(f"Salaries: {salaries}")
-        print(f"Descriptions: {job_descriptions}")
-        print(f"Links: {links}")
-
         return (titles, names, locations, salaries, job_descriptions, links)
 
     except Exception as ex:
         errorLog_file(str(ex), "jobCard Function Failed", today, now)
         print("An error occurred in jobCard: ", ex)
 
+
 def createDataFrame():
     try:
-        # Check if all lists have data
-        if not all([titles, names, locations, salaries, job_descriptions, links]):
-            raise ValueError("One or more lists are empty.")
+        # Debugging prints
+        print(f"Titles length: {len(titles)}")
+        print(f"Names length: {len(names)}")
+        print(f"Locations length: {len(locations)}")
+        print(f"Salaries length: {len(salaries)}")
+        print(f"Job Descriptions length: {len(job_descriptions)}")
+        print(f"Links length: {len(links)}")
+
+        # Check for mismatched lengths
+        if len(titles) != len(names) or len(names) != len(locations) or len(locations) != len(salaries) or len(salaries) != len(job_descriptions) or len(job_descriptions) != len(links):
+            for i in range(len(titles)):
+                print(f"Index {i}: Title={titles[i] if i < len(titles) else 'N/A'}, Salary={salaries[i] if i < len(salaries) else 'N/A'}")
 
         # Ensure all lists have the same length
         length = len(titles)
@@ -169,7 +166,7 @@ def createDataFrame():
                 "Job Title": titles[i],
                 "Company Name": names[i],
                 "Location": locations[i],
-                "Salaries": salaries[i],
+                "Salaries": salaries[i] if i < len(salaries) else "N/A",
                 "Job Description": job_descriptions[i],
                 "Link": links[i]
             }
