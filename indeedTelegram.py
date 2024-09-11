@@ -119,6 +119,14 @@ def jobCard(url):
         description_elements = soup.find_all("div", class_="css-9446fg eu4oa1w0")
         job_link_elements = soup.find_all("a", class_="jcs-JobTitle css-jspxzf eu4oa1w0")
 
+        # Debug prints to verify data
+        print(f"Title Elements: {len(title_elements)}")
+        print(f"Company Elements: {len(company_elements)}")
+        print(f"Location Elements: {len(location_elements)}")
+        print(f"Salary Elements: {len(salary_elements)}")
+        print(f"Description Elements: {len(description_elements)}")
+        print(f"Job Link Elements: {len(job_link_elements)}")
+
         # Handle cases where no data is found
         if not any([title_elements, company_elements, location_elements, salary_elements, description_elements, job_link_elements]):
             print(f"Some elements are missing in the page content for URL: {url}")
@@ -132,13 +140,18 @@ def jobCard(url):
         links.extend([f"https://www.indeed.com{link.get('href')}" for link in job_link_elements])
 
         print("Success Job card data")
+        print(f"Titles: {titles}")
+        print(f"Names: {names}")
+        print(f"Locations: {locations}")
+        print(f"Salaries: {salaries}")
+        print(f"Descriptions: {job_descriptions}")
+        print(f"Links: {links}")
+
         return (titles, names, locations, salaries, job_descriptions, links)
 
     except Exception as ex:
         errorLog_file(str(ex), "jobCard Function Failed", today, now)
         print("An error occurred in jobCard: ", ex)
-
-
 
 def createDataFrame():
     try:
