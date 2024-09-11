@@ -196,5 +196,29 @@
         "Location": "createDataFrame",
         "Date": "2024-09-11",
         "Time": "05:37:05"
+    },
+    {
+        "Error": "Success Soup",
+        "Location": "GetPage URL",
+        "Date": "2024-09-11",
+        "Time": "05:42:02"
+    },
+    {
+        "Error": "Success Soup",
+        "Location": "GetPage URL",
+        "Date": "2024-09-11",
+        "Time": "05:42:02"
+    },
+    {
+        "Error": "Job cards container not found in the page",
+        "Location": "Soup",
+        "Date": "2024-09-11",
+        "Time": "05:42:02"
+    },
+    {
+        "Error": "Some lists are empty or data is missing to create DataFrame",
+        "Location": "createDataFrame",
+        "Date": "2024-09-11",
+        "Time": "05:42:02"
     }
 ]
