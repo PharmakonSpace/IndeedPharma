@@ -237,5 +237,5 @@ def DriverMain(listOfposition):
         errorLog_file(str(ex), f"DriverMain - URL: {url}", today, now)
 
 # Call the DriverMain function with job positions of interest
-list_of_positions = ["Data Scientist", "Software Engineer", "Product Manager"]
+list_of_positions = ["pharmacy", "pharmaceutical", "Pharmavigilance"]
 DriverMain(list_of_positions)
