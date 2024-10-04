@@ -224,7 +224,8 @@ def DriverMain(listOfposition):
                                    f"<b>Company:</b> {names[i]}\n"
                                    f"<b>Location:</b> {locations[i]}\n"
                                    f"<b>Description:</b> {job_descriptions[i]}\n"
-                                   f"<a href='{links[i]}'>Apply Here</a>")
+                                   f"<b>To Apply:</b> <a href='{links[i]}'>Click Here</a>\n\n"
+                                   f"<a href='t.me/PharmakonSpace'>More_Job</a>")
                         send_telegram_alert(message)
 
                         # Save the alert ID to prevent duplicate alerts
