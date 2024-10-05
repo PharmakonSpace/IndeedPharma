@@ -224,7 +224,8 @@ def DriverMain(listOfposition):
                                    f"<b>Company Name:</b> {names[i]}\n"
                                    f"<b>Location:</b> {locations[i]}\n"
                                    f"<b>Description:</b> {job_descriptions[i][:300]}...\n"
-                                   f'<b>Link:</b> <a href="{links[i]}">Apply here</a>')
+                                   f"<b>To Apply:</b> <a href='{links[i]}'>Click Here</a>\n\n"
+                                   f"<a href='t.me/PharmakonSpace'>More_Job</a>")
 
                         send_telegram_alert(message)
                         save_sent_alert(job_id)  # Mark this job as alerted
