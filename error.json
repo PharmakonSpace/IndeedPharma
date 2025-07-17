@@ -115636,5 +115636,23 @@
         "Location": "Soup",
         "Date": "2025-07-17",
         "Time": "13:31:31"
+    },
+    {
+        "Error": "HTTPConnectionPool(host='localhost', port=47593): Read timed out. (read timeout=120)",
+        "Location": "Soup",
+        "Date": "2025-07-17",
+        "Time": "14:11:55"
+    },
+    {
+        "Error": "Job cards container not found in the page",
+        "Location": "Soup",
+        "Date": "2025-07-17",
+        "Time": "14:11:55"
+    },
+    {
+        "Error": "Job cards container not found in the page",
+        "Location": "Soup",
+        "Date": "2025-07-17",
+        "Time": "14:11:55"
     }
 ]
