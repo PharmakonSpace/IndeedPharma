@@ -260824,5 +260824,23 @@
         "Location": "Soup",
         "Date": "2026-11-20",
         "Time": "18:09:19"
+    },
+    {
+        "Error": "Job cards container not found in the page",
+        "Location": "Soup",
+        "Date": "2026-11-21",
+        "Time": "00:30:08"
+    },
+    {
+        "Error": "Job cards container not found in the page",
+        "Location": "Soup",
+        "Date": "2026-11-21",
+        "Time": "00:30:08"
+    },
+    {
+        "Error": "Job cards container not found in the page",
+        "Location": "Soup",
+        "Date": "2026-11-21",
+        "Time": "00:30:08"
     }
 ]
